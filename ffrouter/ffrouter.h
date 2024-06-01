@@ -9,7 +9,7 @@
 #include "rdma_api.h"
 #include "types.h"
 #include "log.h"
-#include "kern-abi.h"
+//#include "kern-abi.h"
 #include "tokenbucket.h"
 
 #include <string>
@@ -49,6 +49,7 @@
 #include <string.h>
 #include <time.h>
 #include <rdma/rdma_cma.h>
+#include <rdma/ib_user_verbs.h>
 #include <netdb.h>
 #include <netinet/tcp.h>
 
