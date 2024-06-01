@@ -356,7 +356,7 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                     case IBV_POST_SEND:
                     {
                     // Now recover the qp and wr
-                    struct ibv_post_send *post_send = (struct ibv_post_send*)req_body;
+                    struct ib_uverbs_post_send *post_send = (struct ib_uverbs_post_send*)req_body;
                     if (post_send->qp_handle >= MAP_SIZE)
                     {
                         LOG_ERROR("[Warning] QP handle (" << post_send->qp_handle << ") is no less than MAX_QUEUE_MAP_SIZE.");
@@ -367,8 +367,8 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                         tb = ffr->tokenbucket[post_send->qp_handle];
                     }
 
-                    struct ibv_send_wr *wr = (struct ibv_send_wr*)((char*)req_body + sizeof(struct ibv_post_send));
-                    struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ibv_post_send) + post_send->wr_count * sizeof(struct ibv_send_wr));
+                    struct ibv_send_wr *wr = (struct ibv_send_wr*)((char*)req_body + sizeof(struct ib_uverbs_post_send));
+                    struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ib_uverbs_post_send) + post_send->wr_count * sizeof(struct ibv_send_wr));
 
                     uint32_t *ah = NULL; 
                     if (qp->qp_type == IBV_QPT_UD) {
@@ -487,7 +487,7 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                    // LOG_DEBUG("IBV_POST_RECV");
 
                     // Now recover the qp and wr
-                    struct ibv_post_recv *post_recv = (struct ibv_post_recv*)req_body;
+                    struct ib_uverbs_post_recv *post_recv = (struct ib_uverbs_post_recv*)req_body;
                     if (post_recv->qp_handle >= MAP_SIZE)
                     {
                         LOG_ERROR("[Warning] QP handle (" << post_recv->qp_handle << ") is no less than MAX_QUEUE_MAP_SIZE.");
@@ -497,8 +497,8 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                         qp = ffr->qp_map[post_recv->qp_handle];
                     }
 
-                    struct ibv_recv_wr *wr = (struct ibv_recv_wr*)((char*)req_body + sizeof(struct ibv_post_recv));
-                    struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ibv_post_recv) + post_recv->wr_count * sizeof(struct ibv_recv_wr));
+                    struct ibv_recv_wr *wr = (struct ibv_recv_wr*)((char*)req_body + sizeof(struct ib_uverbs_post_recv));
+                    struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ib_uverbs_post_recv) + post_recv->wr_count * sizeof(struct ibv_recv_wr));
 
                     for (int i = 0; i < post_recv->wr_count; i++)
                     {
@@ -685,7 +685,7 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                     rsp_header = (struct FfrResponseHeader *)srq_csp->rsp;
                     rsp = srq_csp->rsp + sizeof(struct FfrResponseHeader);
 
-                    struct ibv_post_srq_recv *post_recv = (struct ibv_post_srq_recv*)req_body;
+                    struct ib_uverbs_post_srq_recv *post_recv = (struct ib_uverbs_post_srq_recv*)req_body;
 
                     if (post_recv->srq_handle >= MAP_SIZE)
                     {
@@ -696,8 +696,8 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                         srq = ffr->srq_map[post_recv->srq_handle];
                     }
 
-                    struct ibv_recv_wr *wr = (struct ibv_recv_wr*)((char*)req_body + sizeof(struct ibv_post_srq_recv));
-                    struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ibv_post_srq_recv) + post_recv->wr_count * sizeof(struct ibv_recv_wr));
+                    struct ibv_recv_wr *wr = (struct ibv_recv_wr*)((char*)req_body + sizeof(struct ib_uverbs_post_srq_recv));
+                    struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ib_uverbs_post_srq_recv) + post_recv->wr_count * sizeof(struct ibv_recv_wr));
 
                     for (int i = 0; i < post_recv->wr_count; i++)
                     {
@@ -1491,7 +1491,7 @@ void HandleRequest(struct HandlerArgs *args)
                 }
 
                 // Now recover the qp and wr
-                struct ibv_post_send *post_send = (struct ibv_post_send*)req_body;
+                struct ib_uverbs_post_send *post_send = (struct ib_uverbs_post_send*)req_body;
                 if (post_send->qp_handle >= MAP_SIZE)
                 {
                     LOG_ERROR("[Warning] QP handle (" << post_send->qp_handle << ") is no less than MAX_QUEUE_MAP_SIZE.");
@@ -1502,8 +1502,8 @@ void HandleRequest(struct HandlerArgs *args)
                     tb = ffr->tokenbucket[post_send->qp_handle];
                 }
 
-                struct ibv_send_wr *wr = (struct ibv_send_wr*)((char*)req_body + sizeof(struct ibv_post_send));
-                struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ibv_post_send) + post_send->wr_count * sizeof(struct ibv_send_wr));
+                struct ibv_send_wr *wr = (struct ibv_send_wr*)((char*)req_body + sizeof(struct ib_uverbs_post_send));
+                struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ib_uverbs_post_send) + post_send->wr_count * sizeof(struct ibv_send_wr));
 
                 uint32_t *ah = NULL; 
                 if (qp->qp_type == IBV_QPT_UD) {
@@ -1612,7 +1612,7 @@ void HandleRequest(struct HandlerArgs *args)
                 }
 
                 // Now recover the qp and wr
-                struct ibv_post_recv *post_recv = (struct ibv_post_recv*)req_body;
+                struct ib_uverbs_post_recv *post_recv = (struct ib_uverbs_post_recv*)req_body;
                 if (post_recv->qp_handle >= MAP_SIZE)
                 {
                     LOG_ERROR("[Warning] QP handle (" << post_recv->qp_handle << ") is no less than MAX_QUEUE_MAP_SIZE.");
@@ -1622,8 +1622,8 @@ void HandleRequest(struct HandlerArgs *args)
                     qp = ffr->qp_map[post_recv->qp_handle];
                 }
 
-                struct ibv_recv_wr *wr = (struct ibv_recv_wr*)((char*)req_body + sizeof(struct ibv_post_recv));
-                struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ibv_post_recv) + post_recv->wr_count * sizeof(struct ibv_recv_wr));
+                struct ibv_recv_wr *wr = (struct ibv_recv_wr*)((char*)req_body + sizeof(struct ib_uverbs_post_recv));
+                struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ib_uverbs_post_recv) + post_recv->wr_count * sizeof(struct ibv_recv_wr));
 
                 for (int i = 0; i < post_recv->wr_count; i++)
                 {
@@ -2107,7 +2107,7 @@ void HandleRequest(struct HandlerArgs *args)
                 }
 
                 // Now recover the qp and wr
-                struct ibv_post_recv *post_recv = (struct ibv_post_recv*)req_body;
+                struct ib_uverbs_post_recv *post_recv = (struct ib_uverbs_post_recv*)req_body;
                 if (post_recv->qp_handle >= MAP_SIZE)
                 {
                     LOG_ERROR("[Warning] SRQ handle (" << post_recv->qp_handle << ") is no less than MAX_QUEUE_MAP_SIZE.");
@@ -2117,8 +2117,8 @@ void HandleRequest(struct HandlerArgs *args)
                     srq = ffr->srq_map[post_recv->qp_handle];
                 }
 
-                struct ibv_recv_wr *wr = (struct ibv_recv_wr*)((char*)req_body + sizeof(struct ibv_post_recv));
-                struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ibv_post_recv) + post_recv->wr_count * sizeof(struct ibv_recv_wr));
+                struct ibv_recv_wr *wr = (struct ibv_recv_wr*)((char*)req_body + sizeof(struct ib_uverbs_post_recv));
+                struct ibv_sge *sge = (struct ibv_sge*)((char*)req_body + sizeof(struct ib_uverbs_post_recv) + post_recv->wr_count * sizeof(struct ibv_recv_wr));
 
                 for (int i = 0; i < post_recv->wr_count; i++)
                 {

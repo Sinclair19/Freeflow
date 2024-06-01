@@ -6,15 +6,15 @@
 
 int ibv_exp_cmd_query_device_resp(int cmd_fd, void* cmd_in, void* resp_out)
 {
-	struct ibv_exp_query_device cmd;
-	struct ibv_exp_query_device_resp resp;
-	struct ibv_query_device_resp *r_resp;
+	struct ib_uverbs_ex_query_device cmd;
+	struct ib_uverbs_ex_query_device_resp resp;
+	struct ib_uverbs_query_device_resp *r_resp;
 	uint32_t comp_mask = 0;
 
 	memset(&resp, 0, sizeof(resp));
 	r_resp = IBV_RESP_TO_VERBS_RESP_EX(&resp,
-					   struct ibv_exp_query_device_resp,
-					   struct ibv_query_device_resp);
+					   struct ib_uverbs_ex_query_device_resp,
+					   struct ib_uverbs_query_device_resp);
 
 	memcpy(&cmd, cmd_in, sizeof(cmd));
 
@@ -31,12 +31,12 @@ int ibv_exp_cmd_query_device_resp(int cmd_fd, void* cmd_in, void* resp_out)
 int ibv_cmd_query_qp_resp(int cmd_fd, void* cmd_in, int cmd_size, void* resp_out)
 {
 	char cmd_inp[100];
-	struct ibv_query_qp *cmd = (struct ibv_query_qp*)cmd_inp;
-	struct ibv_query_qp_resp resp;
+	struct ib_uverbs_query_qp *cmd = (struct ib_uverbs_query_qp*)cmd_inp;
+	struct ib_uverbs_query_qp_resp resp;
 
 	IBV_INIT_CMD_RESP(cmd, cmd_size, QUERY_QP, &resp, sizeof resp);
-	cmd->qp_handle = ((struct ibv_query_qp *)cmd_in)->qp_handle;
-	cmd->attr_mask = ((struct ibv_query_qp *)cmd_in)->attr_mask;
+	cmd->qp_handle = ((struct ib_uverbs_query_qp *)cmd_in)->qp_handle;
+	cmd->attr_mask = ((struct ib_uverbs_query_qp *)cmd_in)->attr_mask;
 
 	if (write(cmd_fd, cmd, cmd_size) != cmd_size)
 		return errno;
@@ -48,8 +48,8 @@ int ibv_cmd_query_qp_resp(int cmd_fd, void* cmd_in, int cmd_size, void* resp_out
 int ibv_cmd_create_flow_resp(int cmd_fd, void* cmd_in, int written_size, int exp_flow, void* resp_out)
 {
 	char cmd_inp[1024];
-	struct ibv_create_flow *cmd = (struct ibv_create_flow*)cmd_inp;
-	struct ibv_create_flow_resp resp;
+	struct ib_uverbs_create_flow *cmd = (struct ib_uverbs_create_flow*)cmd_inp;
+	struct ib_uverbs_create_flow_resp resp;
 
 	memcpy(cmd, cmd_in, written_size);
 

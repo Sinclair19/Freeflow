@@ -9,6 +9,7 @@
 #include <rdma/rdma_cma.h>
 #include <rdma/rdma_cma_abi.h>
 #include <rdma/rdma_verbs.h>
+#include <rdma/ib_user_verbs.h>
 
 #include <pthread.h>
 
@@ -123,13 +124,13 @@ struct IBV_QUERY_DEV_RSP
 
 struct IBV_EXP_QUERY_DEV_REQ
 {
-        struct ibv_exp_query_device cmd;        
+        struct ib_uverbs_ex_query_device cmd;        
 };
 
 struct IBV_EXP_QUERY_DEV_RSP
 {
 	int ret_errno;	
-        struct ibv_exp_query_device_resp resp;        
+        struct ib_uverbs_query_device_resp resp;        
 };
 
 struct IBV_QUERY_PORT_REQ
@@ -279,7 +280,7 @@ struct IBV_QUERY_QP_REQ
 struct IBV_QUERY_QP_RSP
 {
         int ret_errno;
-        struct ibv_query_qp_resp resp;
+        struct ib_uverbs_query_qp_resp resp;
 };
 
 struct IBV_POST_SEND_REQ
@@ -392,12 +393,12 @@ struct IBV_CREATE_FLOW_REQ
 struct IBV_CREATE_FLOW_RSP
 {
         int ret_errno;
-        struct ibv_create_flow_resp resp;
+        struct ib_uverbs_create_flow_resp resp;
 };
 
 struct IBV_DESTROY_FLOW_REQ
 {
-        struct ibv_destroy_flow cmd;
+        struct ib_uverbs_destroy_flow cmd;
 };
 
 struct IBV_DESTROY_FLOW_RSP
@@ -659,7 +660,7 @@ struct CM_INIT_QP_ATTR_REQ
 struct CM_INIT_QP_ATTR_RSP
 {
         int ret_errno;
-        struct ibv_kern_qp_attr resp;
+        struct ib_uverbs_qp_attr resp;
 };
 
 struct CM_CONNECT_REQ
