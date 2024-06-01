@@ -36,8 +36,8 @@
 
 #include <pthread.h>
 
-#include <infiniband/driver.h>
-#include <infiniband/driver_exp.h>
+//#include <infiniband/driver.h>
+//#include <infiniband/driver_exp.h>
 
 #ifdef HAVE_VALGRIND_MEMCHECK_H
 

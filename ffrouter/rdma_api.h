@@ -7,12 +7,12 @@
 #include "constant.h"
 
 #include <infiniband/verbs.h>
-#include <infiniband/verbs_exp.h>
+//#include <infiniband/verbs_exp.h>
 #include <infiniband/arch.h>
-#include <infiniband/driver.h>
-#include <infiniband/driver_exp.h>
-#include <infiniband/kern-abi.h>
-#include <infiniband/kern-abi_exp.h>
+//#include <infiniband/driver.h>
+//#include <infiniband/driver_exp.h>
+//#include <infiniband/kern-abi.h>
+//#include <infiniband/kern-abi_exp.h>
 //#include <rdma/rdma_cma.h>
 #include <stdio.h>
 #include <semaphore.h>
