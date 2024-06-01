@@ -548,7 +548,8 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                     break;
                }
                
-               wmb();
+               //wmb();
+               //mmio_wc_start();
                qp_csp->state = RSP_DONE;
                //wc_wmb();
                //mem_flush((void*)&qp_csp->state, sizeof(enum CtrlChannelState));
@@ -648,7 +649,8 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                     }
                 }
 
-                        wmb();
+                        //wmb();
+                        //mmio_wc_start();
                         cq_csp->state = RSP_DONE;
 
                         //wc_wmb();
@@ -737,7 +739,8 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                         ((struct IBV_POST_SRQ_RECV_RSP*)rsp)->bad_wr = bad_wr - wr;
                     }
 
-                    wmb();
+                    //wmb();
+                    //mmio_wc_start();
                     srq_csp->state = RSP_DONE;
                 }
             }
