@@ -837,29 +837,29 @@ void HandleRequest(struct HandlerArgs *args)
             }
             break;
 
-            case IBV_EXP_QUERY_DEV:
-            {
-                LOG_DEBUG("EXP_QUERY_DEV client_id=" << client_sock << " cmd_fd=" << ffr->rdma_data.ib_context->cmd_fd);
+        //     case IBV_EXP_QUERY_DEV:
+        //     {
+        //         LOG_DEBUG("EXP_QUERY_DEV client_id=" << client_sock << " cmd_fd=" << ffr->rdma_data.ib_context->cmd_fd);
 
-                if (read(client_sock, req_body, sizeof(struct IBV_EXP_QUERY_DEV_REQ)) < sizeof(struct IBV_EXP_QUERY_DEV_REQ))
-                {
-                    LOG_ERROR("Failed to read the request body."); 
-                    goto kill;
-                }
+        //         if (read(client_sock, req_body, sizeof(struct IBV_EXP_QUERY_DEV_REQ)) < sizeof(struct IBV_EXP_QUERY_DEV_REQ))
+        //         {
+        //             LOG_ERROR("Failed to read the request body."); 
+        //             goto kill;
+        //         }
 
-                //rsp = malloc(sizeof(struct IBV_QUERY_DEV_RSP));
-                size = sizeof(struct IBV_EXP_QUERY_DEV_RSP);
+        //         //rsp = malloc(sizeof(struct IBV_QUERY_DEV_RSP));
+        //         size = sizeof(struct IBV_EXP_QUERY_DEV_RSP);
 
-                ((struct IBV_EXP_QUERY_DEV_RSP *)rsp)->ret_errno = ibv_exp_cmd_query_device_resp(
-                    ffr->rdma_data.ib_context->cmd_fd,
-                    &((IBV_EXP_QUERY_DEV_REQ*)req_body)->cmd,
-                    &((IBV_EXP_QUERY_DEV_RSP*)rsp)->resp);
+        //         ((struct IBV_EXP_QUERY_DEV_RSP *)rsp)->ret_errno = ibv_exp_cmd_query_device_resp(
+        //             ffr->rdma_data.ib_context->cmd_fd,
+        //             &((IBV_EXP_QUERY_DEV_REQ*)req_body)->cmd,
+        //             &((IBV_EXP_QUERY_DEV_RSP*)rsp)->resp);
                 
-                size = sizeof(struct IBV_EXP_QUERY_DEV_RSP);
-        if (((struct IBV_EXP_QUERY_DEV_RSP *)rsp)->ret_errno != 0)
-            LOG_ERROR("Return error (" << ((struct IBV_EXP_QUERY_DEV_RSP *)rsp)->ret_errno  << ") in EXP_QUERY_DEV");
-            }
-            break;
+        //         size = sizeof(struct IBV_EXP_QUERY_DEV_RSP);
+        // if (((struct IBV_EXP_QUERY_DEV_RSP *)rsp)->ret_errno != 0)
+        //     LOG_ERROR("Return error (" << ((struct IBV_EXP_QUERY_DEV_RSP *)rsp)->ret_errno  << ") in EXP_QUERY_DEV");
+        //     }
+        //     break;
  
         
             case IBV_QUERY_PORT:

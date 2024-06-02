@@ -4,28 +4,28 @@
 #include "verbs_cmd.h"
 #include <stdio.h>
 
-int ibv_exp_cmd_query_device_resp(int cmd_fd, void* cmd_in, void* resp_out)
-{
-	struct ib_uverbs_ex_query_device cmd;
-	struct ib_uverbs_ex_query_device_resp resp;
-	struct ib_uverbs_query_device_resp *r_resp;
-	uint32_t comp_mask = 0;
+// int ibv_exp_cmd_query_device_resp(int cmd_fd, void* cmd_in, void* resp_out)
+// {
+// 	struct ib_uverbs_ex_query_device cmd;
+// 	struct ib_uverbs_ex_query_device_resp resp;
+// 	struct ib_uverbs_query_device_resp *r_resp;
+// 	uint32_t comp_mask = 0;
 
-	memset(&resp, 0, sizeof(resp));
-	r_resp = IBV_RESP_TO_VERBS_RESP_EX(&resp,
-					   struct ib_uverbs_ex_query_device_resp,
-					   struct ib_uverbs_query_device_resp);
+// 	memset(&resp, 0, sizeof(resp));
+// 	r_resp = IBV_RESP_TO_VERBS_RESP_EX(&resp,
+// 					   struct ib_uverbs_ex_query_device_resp,
+// 					   struct ib_uverbs_query_device_resp);
 
-	memcpy(&cmd, cmd_in, sizeof(cmd));
+// 	memcpy(&cmd, cmd_in, sizeof(cmd));
 
-	IBV_INIT_CMD_RESP_EXP(QUERY_DEVICE, &cmd, sizeof(cmd), 0,
-			      &resp, sizeof(resp), 0);
-	if (write(cmd_fd, &cmd, sizeof(cmd)) != sizeof(cmd))
-		return errno;
+// 	IBV_INIT_CMD_RESP_EXP(QUERY_DEVICE, &cmd, sizeof(cmd), 0,
+// 			      &resp, sizeof(resp), 0);
+// 	if (write(cmd_fd, &cmd, sizeof(cmd)) != sizeof(cmd))
+// 		return errno;
 
-	memcpy(resp_out, &resp, sizeof(resp));
-	return 0;
-}
+// 	memcpy(resp_out, &resp, sizeof(resp));
+// 	return 0;
+// }
 
 
 int ibv_cmd_query_qp_resp(struct ibv_context *ib_context, void* cmd_in, int cmd_size, void* resp_out)
