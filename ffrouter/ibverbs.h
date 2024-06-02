@@ -142,14 +142,14 @@ HIDDEN struct ibv_qp *ibv_find_xrc_qp(uint32_t qpn);
 		outsize)						   \
 	do {                                                               \
 		size_t c_size = cmd_size - sizeof(struct ex_hdr);	   \
-			(cmd)->hdr.command = IB_USER_VERBS_CMD_##opcode;   \
+			(cmd)->hdr.command = IB_USER_VERBS_EX_CMD_##opcode;   \
 		(cmd)->hdr.in_words  = ((c_size) / 8);                     \
 		(cmd)->hdr.out_words = ((resp_size) / 8);                  \
-		(cmd)->hdr.provider_in_words   = (((size) - (cmd_size))/8);\
-		(cmd)->hdr.provider_out_words  =			   \
+		(cmd)->ex_hdr.provider_in_words   = (((size) - (cmd_size))/8);\
+		(cmd)->ex_hdr.provider_out_words  =			   \
 			     (((outsize) - (resp_size)) / 8);              \
-		(cmd)->hdr.response  = (uintptr_t) (out);                  \
-		(cmd)->hdr.reserved  = 0;				   \
+		(cmd)->ex_hdr.response  = (uintptr_t) (out);                  \
+		(cmd)->ex_hdr.cmd_hdr_reserved = 0;				   \
 	} while (0)
 
 
@@ -168,14 +168,13 @@ HIDDEN struct ibv_qp *ibv_find_xrc_qp(uint32_t qpn);
 			      drv_osize)				     \
 	do {								     \
 		size_t c_size = cmd_size - sizeof(struct ex_hdr);	     \
-		(cmd)->hdr.command = IB_USER_VERBS_EXP_CMD_##opcode +	     \
-				     IB_USER_VERBS_EXP_CMD_FIRST;	     \
+		(cmd)->hdr.command = IB_USER_VERBS_EX_CMD_##opcode;     \
 		(cmd)->hdr.in_words  = (c_size / 8);			     \
 		(cmd)->hdr.out_words = (osize / 8);			     \
-		(cmd)->hdr.provider_in_words   = (drv_size  / 8);	     \
-		(cmd)->hdr.provider_out_words  = (drv_osize / 8);	     \
-		(cmd)->hdr.response  = (uintptr_t) (out);		     \
-		(cmd)->hdr.reserved  = 0;				     \
+		(cmd)->ex_hdr.provider_in_words   = (drv_size  / 8);	     \
+		(cmd)->ex_hdr.provider_out_words  = (drv_osize / 8);	     \
+		(cmd)->ex_hdr.response  = (uintptr_t) (out);		     \
+		(cmd)->ex_hdr.cmd_hdr_reserved  = 0;				     \
 	} while (0)
 
 #define IBV_INIT_CMD_EXP(opcode, cmd, cmd_size, drv_size)		\

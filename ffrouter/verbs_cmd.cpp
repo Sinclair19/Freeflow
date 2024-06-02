@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #include "verbs_cmd.h"
+#include "rdma_api.h"
 #include <stdio.h>
 
 // int ibv_exp_cmd_query_device_resp(int cmd_fd, void* cmd_in, void* resp_out)
@@ -73,12 +74,28 @@ int ibv_cmd_create_flow_resp(int cmd_fd, void* cmd_in, int written_size, int exp
 		ib_spec_ptr = ib_spec_ptr + ((struct ibv_kern_spec *)ib_spec_ptr)->hdr.size;
 	}
 
-	if (exp_flow)
-		IBV_INIT_CMD_RESP_EXP(CREATE_FLOW, cmd, written_size, 0, &resp, sizeof(resp), 0);
-	else
-		IBV_INIT_CMD_RESP_EX_VCMD(cmd, written_size, written_size, CREATE_FLOW, &resp, sizeof(resp));
+	struct ibv_create_flow_warp {
+		struct ib_uverbs_cmd_hdr hdr;
+		struct ib_uverbs_ex_cmd_hdr ex_hdr;
+		__u32 comp_mask;
+		__u32 qp_handle;
+		struct ib_uverbs_flow_attr flow_attr;
+	};
 
-	if (write(cmd_fd, cmd, written_size) != written_size)
+	struct ibv_create_flow_warp *cmd_warp;
+
+	cmd_warp->comp_mask = cmd->comp_mask;
+	cmd_warp->qp_handle = cmd->qp_handle;
+	cmd_warp->flow_attr = cmd->flow_attr;
+
+
+	IBV_INIT_CMD_RESP_EXP(CREATE_FLOW, cmd_warp, written_size, 0, &resp, sizeof(resp), 0);
+	//if (exp_flow)
+	//IBV_INIT_CMD_RESP_EXP(CREATE_FLOW, cmd, written_size, 0, &resp, sizeof(resp), 0);
+	//else
+	//	IBV_INIT_CMD_RESP_EX_VCMD(cmd, written_size, written_size, CREATE_FLOW, &resp, sizeof(resp));
+
+	if (write(cmd_fd, cmd_warp, written_size) != written_size)
 		return errno;
 
 	memcpy(resp_out, &resp, sizeof(resp));
@@ -87,12 +104,24 @@ int ibv_cmd_create_flow_resp(int cmd_fd, void* cmd_in, int written_size, int exp
 
 int ibv_cmd_destroy_flow_resp(int cmd_fd, void* cmd_in)
 {
-	struct ibv_destroy_flow cmd;
+	struct ib_uverbs_destroy_flow *cmd;
 
-	memcpy(&cmd, cmd_in, sizeof cmd);
-	IBV_INIT_CMD_EX(&cmd, sizeof(cmd), DESTROY_FLOW);
+	memcpy(cmd, cmd_in, sizeof(cmd));
 
-	if (write(cmd_fd, &cmd, sizeof cmd) != sizeof cmd)
+	struct ibv_destroy_flow_warp {
+		struct ib_uverbs_cmd_hdr hdr;
+		struct ib_uverbs_ex_cmd_hdr ex_hdr;
+		__u32 comp_mask;
+		__u32 flow_handle;
+	};
+
+	struct ibv_destroy_flow_warp *cmd_warp;
+	cmd_warp->comp_mask = cmd->comp_mask;
+	cmd_warp->flow_handle = cmd->flow_handle;
+
+	IBV_INIT_CMD_EX(cmd_warp, sizeof(cmd_warp), DESTROY_FLOW);
+
+	if (write(cmd_fd, cmd_warp, sizeof(cmd_warp)) != sizeof cmd_warp)
 		return errno;
 	return 0;
 }
