@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #include "rdma_api.h"
+#include <valgrind/memcheck.h>
 
 unsigned long
 gettime_ms()
@@ -462,3 +463,30 @@ fill_sge(struct ibv_sge *sge, struct ib_data *myib)
   sge->length = myib->msg_size;
   sge->lkey = myib->ib_mr->lkey;
 }
+
+int _execute_cmd_write(struct ibv_context *ctx, unsigned int write_method,
+		       void *vreq, size_t core_req_size,
+		       size_t req_size, void *resp, size_t core_resp_size,
+		       size_t resp_size)
+{
+	struct ib_uverbs_cmd_hdr *req = (ib_uverbs_cmd_hdr*) vreq;
+	// struct verbs_ex_private *priv = get_priv(ctx);
+
+	// if (!VERBS_WRITE_ONLY && (VERBS_IOCTL_ONLY || priv->use_ioctl_write))
+	// 	return ioctl_write(ctx, write_method, req + 1,
+	// 			   core_req_size - sizeof(*req),
+	// 			   req_size - sizeof(*req), resp,
+	// 			   core_resp_size, resp_size);
+
+	req->command = write_method;
+	req->in_words = __check_divide(req_size, 4);
+	req->out_words = __check_divide(resp_size, 4);
+
+	if (write(ctx->cmd_fd, vreq, req_size) != req_size)
+		return errno;
+
+	if (resp)
+		VALGRIND_MAKE_MEM_DEFINED(resp, resp_size);
+	return 0;
+}
+
