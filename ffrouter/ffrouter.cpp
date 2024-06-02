@@ -1469,14 +1469,14 @@ void HandleRequest(struct HandlerArgs *args)
                 size = sizeof(struct IBV_QUERY_QP_RSP);
 
                 ((struct IBV_QUERY_QP_RSP *)rsp)->ret_errno = ibv_cmd_query_qp_resp(
-                    ffr->rdma_data.ib_context->cmd_fd,
+                    ffr->rdma_data.ib_context,
                     ((IBV_QUERY_QP_REQ*)req_body)->cmd,
                     ((IBV_QUERY_QP_REQ*)req_body)->cmd_size,
                     &((IBV_QUERY_QP_RSP*)rsp)->resp);
                 
                 size = sizeof(struct IBV_QUERY_QP_RSP);
-        if (((struct IBV_QUERY_QP_RSP *)rsp)->ret_errno != 0)
-            LOG_ERROR("Return error (" << ((struct IBV_QUERY_QP_RSP *)rsp)->ret_errno  << ") in QUERY_QP");
+                if (((struct IBV_QUERY_QP_RSP *)rsp)->ret_errno != 0)
+                LOG_ERROR("Return error (" << ((struct IBV_QUERY_QP_RSP *)rsp)->ret_errno  << ") in QUERY_QP");
             }
             break;
 

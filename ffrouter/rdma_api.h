@@ -9,6 +9,9 @@
 #include <infiniband/verbs.h>
 //#include <infiniband/verbs_exp.h>
 #include <infiniband/arch.h>
+#include <rdma/ib_user_verbs.h>
+#include <rdma/ib_user_ioctl_cmds.h>
+#include "kern-abi.h"
 //#include <infiniband/driver.h>
 //#include <infiniband/driver_exp.h>
 //#include <infiniband/kern-abi.h>
@@ -99,5 +102,43 @@ struct ibv_recv_wr * create_recv_request(struct ib_data *myib);
 struct ibv_send_wr * create_send_request(struct ib_data *myib, struct ib_conn_data *dest, int opcode);
 
 void fill_sge(struct ibv_sge *sge, struct ib_data *myib);
+
+/*
+ * For write() only commands that have fixed core structures and may take uhw
+ * driver data. The last arguments are the same ones passed into the typical
+ * ibv_cmd_* function. execute_cmd_write deduces the length of the core
+ * structure based on the KABI struct linked to the enum op code.
+ */
+int _execute_cmd_write(struct ibv_context *ctx, unsigned int write_method,
+		       void *req, size_t core_req_size,
+		       size_t req_size, void *resp, size_t core_resp_size,
+		       size_t resp_size);
+#define execute_cmd_write(ctx, enum, cmd, cmd_size, resp, resp_size)           \
+	({                                                                     \
+		(cmd)->response = ioctl_ptr_to_u64(resp);         \
+		_execute_cmd_write(                                            \
+			ctx, enum, cmd, \
+			sizeof(*(cmd)), cmd_size,                              \
+			resp,        \
+			sizeof(*(resp)), resp_size);                           \
+	})
+
+
+static inline uint64_t ioctl_ptr_to_u64(const void *ptr)
+{
+	if (sizeof(ptr) == sizeof(uint64_t))
+		return (uintptr_t)ptr;
+
+	/*
+	 * Some CPU architectures require sign extension when converting from
+	 * a 32 bit to 64 bit pointer.  This should match the kernel
+	 * implementation of compat_ptr() for the architecture.
+	 */
+#if defined(__tilegx__)
+	return (int64_t)(intptr_t)ptr;
+#else
+	return (uintptr_t)ptr;
+#endif
+}
 
 #endif /* RDMA_API_H */
