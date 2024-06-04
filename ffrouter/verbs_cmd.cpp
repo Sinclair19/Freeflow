@@ -82,20 +82,20 @@ int ibv_cmd_create_flow_resp(int cmd_fd, void* cmd_in, int written_size, int exp
 		struct ib_uverbs_flow_attr flow_attr;
 	};
 
-	struct ibv_create_flow_warp *cmd_warp;
+	struct ibv_create_flow_warp cmd_warp;
 
-	cmd_warp->comp_mask = cmd->comp_mask;
-	cmd_warp->qp_handle = cmd->qp_handle;
-	cmd_warp->flow_attr = cmd->flow_attr;
+	cmd_warp.comp_mask = cmd->comp_mask;
+	cmd_warp.qp_handle = cmd->qp_handle;
+	cmd_warp.flow_attr = cmd->flow_attr;
 
 
-	IBV_INIT_CMD_RESP_EXP(CREATE_FLOW, cmd_warp, written_size, 0, &resp, sizeof(resp), 0);
+	IBV_INIT_CMD_RESP_EXP(CREATE_FLOW, &cmd_warp, written_size, 0, &resp, sizeof(resp), 0);
 	//if (exp_flow)
 	//IBV_INIT_CMD_RESP_EXP(CREATE_FLOW, cmd, written_size, 0, &resp, sizeof(resp), 0);
 	//else
 	//	IBV_INIT_CMD_RESP_EX_VCMD(cmd, written_size, written_size, CREATE_FLOW, &resp, sizeof(resp));
 
-	if (write(cmd_fd, cmd_warp, written_size) != written_size)
+	if (write(cmd_fd, &cmd_warp, written_size) != written_size)
 		return errno;
 
 	memcpy(resp_out, &resp, sizeof(resp));
@@ -115,13 +115,13 @@ int ibv_cmd_destroy_flow_resp(int cmd_fd, void* cmd_in)
 		__u32 flow_handle;
 	};
 
-	struct ibv_destroy_flow_warp *cmd_warp;
-	cmd_warp->comp_mask = cmd->comp_mask;
-	cmd_warp->flow_handle = cmd->flow_handle;
+	struct ibv_destroy_flow_warp cmd_warp;
+	cmd_warp.comp_mask = cmd->comp_mask;
+	cmd_warp.flow_handle = cmd->flow_handle;
 
-	IBV_INIT_CMD_EX(cmd_warp, sizeof(cmd_warp), DESTROY_FLOW);
+	IBV_INIT_CMD_EX(&cmd_warp, sizeof(cmd_warp), DESTROY_FLOW);
 
-	if (write(cmd_fd, cmd_warp, sizeof(cmd_warp)) != sizeof cmd_warp)
+	if (write(cmd_fd, &cmd_warp, sizeof(cmd_warp)) != sizeof cmd_warp)
 		return errno;
 	return 0;
 }
