@@ -23,7 +23,7 @@ typedef enum RDMA_FUNCTION_CALL
         IBV_GET_DEVICE_LIST,
         IBV_GET_CONTEXT,
         IBV_QUERY_DEV,
-        IBV_EXP_QUERY_DEV,
+        //IBV_EXP_QUERY_DEV,
         IBV_QUERY_PORT,
         IBV_ALLOC_PD,
         IBV_DEALLOC_PD,
