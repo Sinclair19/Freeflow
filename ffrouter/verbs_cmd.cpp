@@ -86,7 +86,8 @@ int ibv_cmd_create_flow_resp(int cmd_fd, void* cmd_in, int written_size, int exp
 
 	cmd_warp.comp_mask = cmd->comp_mask;
 	cmd_warp.qp_handle = cmd->qp_handle;
-	cmd_warp.flow_attr = cmd->flow_attr;
+	//cmd_warp.flow_attr = cmd->flow_attr;
+	memcpy(&cmd_warp.flow_attr, &cmd->flow_attr, sizeof(struct ib_uverbs_flow_attr));
 
 
 	IBV_INIT_CMD_RESP_EXP(CREATE_FLOW, &cmd_warp, written_size, 0, &resp, sizeof(resp), 0);
@@ -104,9 +105,7 @@ int ibv_cmd_create_flow_resp(int cmd_fd, void* cmd_in, int written_size, int exp
 
 int ibv_cmd_destroy_flow_resp(int cmd_fd, void* cmd_in)
 {
-	struct ib_uverbs_destroy_flow *cmd;
-
-	memcpy(cmd, cmd_in, sizeof(cmd));
+	struct ib_uverbs_destroy_flow *cmd = (ib_uverbs_destroy_flow*) cmd_in;
 
 	struct ibv_destroy_flow_warp {
 		struct ib_uverbs_cmd_hdr hdr;
