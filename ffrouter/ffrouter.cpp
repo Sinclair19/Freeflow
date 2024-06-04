@@ -549,7 +549,7 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                }
                
                //wmb();
-               //mmio_wc_start();
+               mmio_wc_start();
                qp_csp->state = RSP_DONE;
                //wc_wmb();
                //mem_flush((void*)&qp_csp->state, sizeof(enum CtrlChannelState));
@@ -650,7 +650,7 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                 }
 
                         //wmb();
-                        //mmio_wc_start();
+                        mmio_wc_start();
                         cq_csp->state = RSP_DONE;
 
                         //wc_wmb();
@@ -740,7 +740,7 @@ void CtrlChannelLoop(struct HandlerArgs *args)
                     }
 
                     //wmb();
-                    //mmio_wc_start();
+                    mmio_wc_start();
                     srq_csp->state = RSP_DONE;
                 }
             }

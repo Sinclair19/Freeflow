@@ -175,5 +175,22 @@ static inline size_t __check_divide(size_t val, unsigned int div)
 	return val / div;
 }
 
+/*#elif defined(__x86_64__)*/
+#define mmio_flush_writes() asm volatile("sfence" ::: "memory")
+/* Prevent WC writes from being re-ordered relative to other MMIO
+   writes. This should be used before a write to WC memory.
 
+   This must act as a barrier to prevent write re-ordering from different
+   memory types:
+     *mmio_mem = 1;
+     mmio_flush_writes();
+     *wc_mem = 2;
+   Must always produce a TLP '1' followed by '2'.
+
+   This barrier implies udma_to_device_barrier()
+
+   This is intended to be used in conjunction with WC memory to generate large
+   PCI-E MemWr TLPs from the CPU.
+*/
+#define mmio_wc_start() mmio_flush_writes()
 #endif /* RDMA_API_H */
